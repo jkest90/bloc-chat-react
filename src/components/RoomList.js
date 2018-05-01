@@ -14,6 +14,7 @@ class RoomList extends Component {
          const room = snapshot.val();
          room.key = snapshot.key;
          this.setState({ rooms: this.state.rooms.concat(room) });
+         console.log('child added!', room, room.key);
       });
    }
 
