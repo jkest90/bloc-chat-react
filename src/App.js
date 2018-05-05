@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import './App.css';
-import RoomList from './components/RoomList'
+import RoomList from './components/RoomList';
+import MessageList from './components/MessageList';
 import * as firebase from 'firebase';
+
 var config = {
    apiKey: "AIzaSyBdHad_1G2cpQXCyX0R8rBa2ZgAvWvHmrs",
    authDomain: "bloc-chat-2f235.firebaseapp.com",
@@ -10,14 +12,36 @@ var config = {
    storageBucket: "bloc-chat-2f235.appspot.com",
    messagingSenderId: "898285849009"
 };
+
 firebase.initializeApp(config);
 
 class App extends Component {
+   constructor(props) {
+      super(props);
+      this.state = {
+         activeRoom: ''
+      };
+   }
+
+   updateActiveRoom(room) {
+      this.setState({ activeRoom : room});
+      console.log('Active Room Changed', this.state.activeRoom);
+   };
+
    render() {
       return (
          <div className="App">
             <h1> Bloc Chat </h1>
-            <RoomList firebase={firebase}/>
+            <RoomList
+               firebase={ firebase }
+               handleActiveRoom={(room) => this.updateActiveRoom(room)}
+               activeRoom={this.state.activeRoom}
+            />
+            <MessageList
+               firebase={ firebase }
+               handleActiveRoom={(room) => this.updateActiveRoom(room)}
+               activeRoom={this.state.activeRoom}
+            />
          </div>
       );
   }
