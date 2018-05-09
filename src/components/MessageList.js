@@ -8,7 +8,7 @@ class MessageList extends Component {
          content: '',
          sentAt: '',
          roomId: null,
-         messages: [],
+         messages: []
       };
       this.messagesRef = this.props.firebase.database().ref('messages');
    }
@@ -51,26 +51,27 @@ class MessageList extends Component {
          console.log('Message', message);
          message.key = snapshot.key;
          this.setState({ messages: this.state.messages.concat(message) });
-         // look into find() method. this.messageRef
       });
    }
 
    render() {
+      const messageList = (
+         this.state.messages.map((message) => {
+            if (message.roomId === this.props.activeRoom.key) {
+              return <li key={message.key}>{message.content}</li>
+            }
+            return null;
+         })
+      );
       return (
-         <div className="chatMessage">
+         <div className="chatMessage-form">
             <form onSubmit={ (e) => this.createMessage(e) }>
                <label>Write a message!</label>
                <input type="text" value = { this.state.content } onChange= { (e) => this.handleChange(e) }/>
                <input type="submit" />
             </form>
             <div>
-               {
-                  this.state.messages.map( (message, index) => {
-                     <div key={message.key}>
-                        <p> {message.content}</p>
-                     </div>
-                  })
-               }
+               { messageList }
             </div>
          </div>
       )
