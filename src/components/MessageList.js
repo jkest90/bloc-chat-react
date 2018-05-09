@@ -13,7 +13,7 @@ class MessageList extends Component {
       this.messagesRef = this.props.firebase.database().ref('messages');
    }
 
-   // set the state of messages equal to values
+   // set the state of messages equal to values onChange
    handleChange(e) {
       e.preventDefault();
       this.setState({
@@ -35,7 +35,7 @@ class MessageList extends Component {
             username: this.state.username,
             content: this.state.content,
             sentAt: this.state.sentAt,
-            roomId: this.state.roomId
+            roomId: this.state.roomId.key
          });
          console.log('New message added');
          this.setState({ username: '', content: '', sentAt: '', roomId: '' });
@@ -44,11 +44,14 @@ class MessageList extends Component {
 
    // messages returned FROM firebase
    componentDidMount() {
+      console.log(this.messagesRef.orderByChild("roomId").equalTo(this.state.roomId))
+      this.messagesRef.orderByChild("roomId").equalTo(this.state.roomId);
       this.messagesRef.on('child_added', snapshot => {
          const message = snapshot.val();
-         console.log('Message', message)
+         console.log('Message', message);
          message.key = snapshot.key;
          this.setState({ messages: this.state.messages.concat(message) });
+         // look into find() method. this.messageRef
       });
    }
 
@@ -60,13 +63,15 @@ class MessageList extends Component {
                <input type="text" value = { this.state.content } onChange= { (e) => this.handleChange(e) }/>
                <input type="submit" />
             </form>
-            {
-               this.state.messages.map( (message, index) => {
-                  <div key={message.key}>
-                     <p> {message.content}</p>
-                  </div>
-               })
-            }
+            <div>
+               {
+                  this.state.messages.map( (message, index) => {
+                     <div key={message.key}>
+                        <p> {message.content}</p>
+                     </div>
+                  })
+               }
+            </div>
          </div>
       )
    }
