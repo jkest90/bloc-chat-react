@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import RoomList from './components/RoomList';
 import MessageList from './components/MessageList';
+import User from './components/User';
 import * as firebase from 'firebase';
 
 var config = {
@@ -19,8 +20,18 @@ class App extends Component {
    constructor(props) {
       super(props);
       this.state = {
-         activeRoom: ''
+         activeRoom: '',
+         username: 'Guest'
       };
+   }
+
+   setUser(user) {
+      this.setState({ username: user });
+   }
+
+   handleSignOut() {
+      firebase.auth().signOut();
+      this.setState({ username: 'Guest'});
    }
 
    updateActiveRoom(room) {
@@ -32,15 +43,21 @@ class App extends Component {
       return (
          <div className="App">
             <h1> Bloc Chat </h1>
+            <User
+               firebase={ firebase }
+               setUser={ (user) => this.setUser(user) }
+               user={ this.state.username }
+               handleSignOut={ () => this.handleSignOut() }
+            />
             <RoomList
                firebase={ firebase }
-               handleActiveRoom={(room) => this.updateActiveRoom(room)}
-               activeRoom={this.state.activeRoom}
+               handleActiveRoom={ (room) => this.updateActiveRoom(room) }
+               activeRoom={ this.state.activeRoom }
             />
             <MessageList
                firebase={ firebase }
-               handleActiveRoom={(room) => this.updateActiveRoom(room)}
-               activeRoom={this.state.activeRoom}
+               handleActiveRoom={ (room) => this.updateActiveRoom(room) }
+               activeRoom={ this.state.activeRoom }
             />
          </div>
       );
