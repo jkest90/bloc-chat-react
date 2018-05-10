@@ -58,6 +58,7 @@ class App extends Component {
                firebase={ firebase }
                handleActiveRoom={ (room) => this.updateActiveRoom(room) }
                activeRoom={ this.state.activeRoom }
+               user={ this.state.username }
             />
          </div>
       );
